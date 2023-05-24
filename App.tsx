@@ -9,7 +9,7 @@ import {
 } from '@expo-google-fonts/roboto'
 import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
 
-// import blurBg from './src/assets/bg-blur.png'
+import blurBg from './src/assets/bg-blur.png'
 import Stripes from './src/assets/bg-stripes.svg'
 import NLWLogo from './src/assets/nlw-spacetime-logo.svg'
 
@@ -28,9 +28,9 @@ export default function App() {
   }
   return (
     <ImageBackground
-      // source={blurBg}
-      className=" relative flex-1 items-center bg-gray-900 px-8"
-      imageStyle={{ position: 'absolute', left: '-100%' }}
+      source={blurBg}
+      className=" relative flex-1 items-center bg-gray-900 px-8 py-10"
+      imageStyle={{ position: 'absolute', left: '-40%' }}
     >
       <StyledStripes className="absolute left-2" />
       <View className="flex-1 items-center justify-center gap-6">
@@ -53,6 +53,9 @@ export default function App() {
           </Text>
         </TouchableOpacity>
       </View>
+      <Text className="text-center font-body leading-relaxed text-gray-200">
+        Feito com 💜 no NLW da Rocketseat
+      </Text>
       <StatusBar style="light" translucent />
     </ImageBackground>
   )
