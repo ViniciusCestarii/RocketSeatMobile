@@ -3,6 +3,9 @@ import { ImageBackground, Text, View, TouchableOpacity } from 'react-native'
 import { styled } from 'nativewind'
 import { makeRedirectUri, useAuthRequest } from 'expo-auth-session'
 import * as SecureStore from 'expo-secure-store'
+import { useCallback, useEffect } from 'react'
+import { api } from '../src/lib/api'
+import { useRouter } from 'expo-router'
 
 import {
   useFonts,
@@ -11,11 +14,9 @@ import {
 } from '@expo-google-fonts/roboto'
 import { BaiJamjuree_700Bold } from '@expo-google-fonts/bai-jamjuree'
 
-import blurBg from './src/assets/bg-blur.png'
-import Stripes from './src/assets/bg-stripes.svg'
-import NLWLogo from './src/assets/nlw-spacetime-logo.svg'
-import { useEffect } from 'react'
-import { api } from './src/lib/api'
+import blurBg from '../src/assets/bg-blur.png'
+import Stripes from '../src/assets/bg-stripes.svg'
+import NLWLogo from '../src/assets/nlw-spacetime-logo.svg'
 
 const StyledStripes = styled(Stripes) // for nativewind to be able to style
 
@@ -28,6 +29,8 @@ const discovery = {
 
 // npm run start
 export default function App() {
+  const router = useRouter()
+
   const [hasLoadedFonts] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
@@ -45,6 +48,21 @@ export default function App() {
     discovery,
   )
 
+  const handleGithubOAuthCode = useCallback(
+    async (code: string) => {
+      const response = await api.post('/register', {
+        code,
+      })
+      const { token } = response.data
+      console.log(token)
+
+      await SecureStore.setItemAsync('token', token) // storaging with expo-secure-store
+
+      router.push('/memories')
+    },
+    [router],
+  )
+
   useEffect(() => {
     console.log(
       makeRedirectUri({
@@ -54,21 +72,9 @@ export default function App() {
     if (response?.type === 'success') {
       const { code } = response.params
 
-      api
-        .post('/register', {
-          code,
-        })
-        .then((response) => {
-          const { token } = response.data
-          console.log(token)
-
-          SecureStore.setItemAsync('token', token) // storagin with expo-secure-store
-        })
-        .catch((err) => {
-          console.error(err)
-        })
+      handleGithubOAuthCode(code)
     }
-  }, [response])
+  }, [response, handleGithubOAuthCode])
 
   if (!hasLoadedFonts) {
     return null
