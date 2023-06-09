@@ -3,7 +3,7 @@ import Icon from '@expo/vector-icons/Feather'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import NLWLogo from '../src/assets/nlw-spacetime-logo.svg'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import React, { useState } from 'react'
 import * as ImagePicker from 'expo-image-picker'
@@ -14,6 +14,7 @@ import { ImagePickerAsset } from 'expo-image-picker'
 
 const NewMemory = () => {
   const { top, bottom } = useSafeAreaInsets()
+  const router = useRouter()
 
   const [preview, setPreview] = useState<ImagePickerAsset | null>(null)
   const [isPublic, setIsPublic] = useState(false)
@@ -29,7 +30,9 @@ const NewMemory = () => {
       if (result.assets[0]) {
         setPreview(result.assets[0])
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const handleCreateMemory = async () => {
@@ -76,6 +79,7 @@ const NewMemory = () => {
         },
       },
     )
+    router.replace('/memories')
   }
   return (
     <ScrollView
@@ -86,7 +90,7 @@ const NewMemory = () => {
         <NLWLogo />
 
         <Link href="/memories" asChild>
-          <TouchableOpacity className="h-10 w-10 items-center justify-center rounded-full bg-purple-500">
+          <TouchableOpacity className="h-9 w-9 items-center justify-center rounded-full bg-purple-500">
             <Icon name="arrow-left" size={16} color="#FFF" />
           </TouchableOpacity>
         </Link>
